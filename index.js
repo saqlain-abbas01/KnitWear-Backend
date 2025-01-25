@@ -1,17 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
-
-dotenv.config();
+import { createProduct } from "./controllers/Products.js";
 
 const server = express();
 
+dotenv.config();
+
+server.use(express.json());
+
 connectDB();
 
-server.get("/", (req, res) => {
-  res.json({ status: "sucess" });
-});
+server.post("/products", createProduct);
 
-server.listen(3000, () => {
+server.listen(process.env.PORT, () => {
   console.log("server started");
 });
