@@ -56,4 +56,18 @@ const fetchAllProducts = async (req, res) => {
   }
 };
 
-export { createProduct, fetchAllProducts };
+const fecthProductsById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const product = await Product.findById(id);
+    res.status(200).json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    errorHandler(error, res);
+  }
+};
+
+export { createProduct, fetchAllProducts, fecthProductsById };
