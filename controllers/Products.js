@@ -70,4 +70,24 @@ const fecthProductsById = async (req, res) => {
   }
 };
 
-export { createProduct, fetchAllProducts, fecthProductsById };
+const updateProductById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({
+      success: true,
+      updatedProduct,
+    });
+  } catch (error) {
+    errorHandler(error, res);
+  }
+};
+
+export {
+  createProduct,
+  fetchAllProducts,
+  fecthProductsById,
+  updateProductById,
+};
