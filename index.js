@@ -7,6 +7,8 @@ import categoriesRoutes from "./routes/Category.js";
 import brandsRoutes from "./routes/Brand.js";
 import userRoutes from "./routes/User.js";
 import authRoutes from "./routes/Auth.js";
+import cartRoutes from "./routes/Cart.js";
+import orderRoutes from "./routes/Order.js";
 
 const server = express();
 
@@ -19,6 +21,8 @@ server.use("/categories", categoriesRoutes);
 server.use("/brands", brandsRoutes);
 server.use("/user", userRoutes);
 server.use("/auth", authRoutes);
+server.use("/carts", cartRoutes);
+server.use("/orders", orderRoutes);
 
 connectDB();
 
