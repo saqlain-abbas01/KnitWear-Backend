@@ -3,6 +3,7 @@ import errorHandler from "../utils/errorhandler.js";
 
 const fetchAllUser = async (req, res) => {
   try {
+    console.log("fecth all users");
     const users = await User.find({});
     res.status(200).json({
       success: true,

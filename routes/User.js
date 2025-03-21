@@ -9,7 +9,6 @@ import {
 const router = express.Router();
 
 router
-  .post("/", createUser)
   .get("/", fetchAllUser)
   .get("/:id", fecthUserById)
   .patch("/:id", updateUserById);
