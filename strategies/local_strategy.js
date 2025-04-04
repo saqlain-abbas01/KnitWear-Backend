@@ -13,7 +13,6 @@ passport.deserializeUser(async (user, done) => {
   try {
     const findUser = await User.findOne({ id: user.id });
     if (!findUser) throw new Error("user not found");
-
     done(null, sanitizeUser(findUser));
   } catch (err) {
     done(err, null);
@@ -22,17 +21,12 @@ passport.deserializeUser(async (user, done) => {
 
 export default passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
+    console.log("email:", email, "password:", password);
     try {
       const findUser = await User.findOne({ email: email });
       if (!findUser) throw new Error("User not found");
       crypto.pbkdf2Sync(password, findUser.salt, 1000, 64, "sha256"),
         async function (err, password) {
-          console.log(
-            "current password:",
-            findUser.password,
-            "input password:",
-            password
-          );
           if (!crypto.timingSafeEqual(findUser.password, password)) {
             return done(null, false, { message: "invalid cradentails" });
           }

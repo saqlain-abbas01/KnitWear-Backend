@@ -18,8 +18,8 @@ const createUser = async (req, res) => {
     const newUser = new User({
       name,
       email,
-      password: hash, // Store hashed password
-      salt, // Store salt for verification
+      password: hash, 
+      salt, 
       role,
       address,
       orders,
@@ -39,12 +39,6 @@ const logInUser = (req, res) => {
   res.send(sanitizeUser(req.user));
 };
 
-const isAuth = (req, res, next) => {
-  if (req.user) {
-    next();
-  } else {
-    res.send("user not authorized");
-  }
-};
 
-export { createUser, logInUser, isAuth };
+
+export { createUser, logInUser };
