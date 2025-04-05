@@ -56,6 +56,22 @@ const fetchAllProducts = async (req, res) => {
   }
 };
 
+const fetchRecentProducts = async (req, res) => {
+  try {
+    const recentProducts = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(6);
+
+    res.status(200).json({
+      success: true,
+      recentProducts,
+    });
+  } catch (error) {
+    console.error("Failed to fetch recent products:", error);
+    errorHandler(error);
+  }
+};
+
 const fecthProductsById = async (req, res) => {
   try {
     const id = req.params.id;
@@ -90,4 +106,5 @@ export {
   fetchAllProducts,
   fecthProductsById,
   updateProductById,
+  fetchRecentProducts,
 };

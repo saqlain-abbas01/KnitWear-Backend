@@ -30,7 +30,15 @@ server.use(passport.initialize());
 server.use(passport.session());
 
 server.use(express.json());
-server.use(cors());
+
+server.use(
+  cors({
+    origin: "*", // Allow all origins (you can restrict this if needed)
+    allowedHeaders: ["*"], // Allow all headers (for requests)
+    exposedHeaders: ["X-Total-Count"], // Expose specific custom headers to the client
+    credentials: true, // Set to true if you need cookies/auth
+  })
+);
 server.use("/products", productRoutes);
 server.use("/categories", categoriesRoutes);
 server.use("/brands", brandsRoutes);
