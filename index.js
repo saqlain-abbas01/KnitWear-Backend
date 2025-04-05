@@ -12,7 +12,7 @@ import authRoutes from "./routes/Auth.js";
 import cartRoutes from "./routes/Cart.js";
 import orderRoutes from "./routes/Order.js";
 import "./strategies/local_strategy.js";
-import { isAuth } from "./utils/common.js";
+// import { isAuth } from "./utils/common.js";
 
 const server = express();
 
@@ -31,7 +31,7 @@ server.use(passport.session());
 
 server.use(express.json());
 server.use(cors());
-server.use("/products", isAuth, productRoutes);
+server.use("/products", productRoutes);
 server.use("/categories", categoriesRoutes);
 server.use("/brands", brandsRoutes);
 server.use("/user", userRoutes);
