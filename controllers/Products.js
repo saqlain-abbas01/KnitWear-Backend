@@ -89,6 +89,7 @@ const fecthProductsById = async (req, res) => {
 const updateProductById = async (req, res) => {
   try {
     const id = req.params.id;
+    console.log("id:", id);
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
@@ -101,10 +102,32 @@ const updateProductById = async (req, res) => {
   }
 };
 
+const deleteProductById = async (req, res) => {
+  try {
+    console.log("deleted pro:", req.params.id);
+    const id = req.params.id;
+    if (!id) {
+      return res.status(400).json({
+        status: false,
+        message: "Product ID is required",
+      });
+    }
+    const deleteProduct = await Product.deleteOne({ _id: id });
+    console.log("deleted product:", deleteProduct);
+    res.json({
+      status: true,
+      deleteProduct,
+    });
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 export {
   createProduct,
   fetchAllProducts,
   fecthProductsById,
   updateProductById,
   fetchRecentProducts,
+  deleteProductById,
 };

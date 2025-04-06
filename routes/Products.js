@@ -5,6 +5,7 @@ import {
   fetchAllProducts,
   updateProductById,
   fetchRecentProducts,
+  deleteProductById,
 } from "../controllers/Products.js";
 
 const router = express.Router();
@@ -14,6 +15,7 @@ router
   .get("/", fetchAllProducts)
   .get("/recents", fetchRecentProducts)
   .get("/:id", fecthProductsById)
-  .patch("/:id", updateProductById);
+  .patch("/:id", updateProductById)
+  .delete("/:id", deleteProductById);
 
 export default router;
