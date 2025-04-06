@@ -1,4 +1,5 @@
 import Order from "../models/Orders.js";
+import User from "../models/User.js";
 import errorHandler from "../utils/errorhandler.js";
 
 const createOrder = async (req, res) => {
@@ -26,6 +27,40 @@ const deleteOrderById = async (req, res) => {
     });
   } catch (error) {
     errorHandler(error, res);
+  }
+};
+
+const fetchAllOrders = async (req, res) => {
+  try {
+    const allOrders = await Order.find({}).lean();
+    console.log("allorders", allOrders);
+    const userIds = [
+      ...new Set(allOrders.map((order) => order.user.toString())),
+    ];
+    console.log("user ids:", userIds);
+    const users = await User.find({ _id: { $in: userIds } });
+
+    console.log("users:", users);
+    const userMap = users.reduce((map, user) => {
+      map[user.id.toString()] = {
+        id: user.id.toString(), // Use virtual 'id' if set, or _id directly
+        name: user.name,
+        email: user.email,
+      };
+      return map;
+    }, {});
+    console.log("usermap", userMap);
+    const ordersWithUserDetails = allOrders.map((order) => ({
+      ...order,
+      user: userMap[order.user.toString()] || null, // Fallback to null if no match
+    }));
+    console.log("orders", ordersWithUserDetails);
+    res.status(200).json({
+      success: true,
+      order: ordersWithUserDetails,
+    });
+  } catch (error) {
+    errorHandler(error);
   }
 };
 
@@ -59,4 +94,10 @@ const updateOrderById = async (req, res) => {
   }
 };
 
-export { fetchOrderByUserId, createOrder, deleteOrderById, updateOrderById };
+export {
+  fetchOrderByUserId,
+  createOrder,
+  deleteOrderById,
+  updateOrderById,
+  fetchAllOrders,
+};
