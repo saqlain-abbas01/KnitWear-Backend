@@ -10,13 +10,25 @@ const createProduct = async (req, res) => {
       product: newProduct,
     });
   } catch (error) {
-    console.error("Error creating product:", error);
     errorHandler(error, res);
   }
 };
 
+const uploadImage = async (req, res) => {
+  console.log("upload file", req.files);
+  try {
+    const urls = req.files.map((file) => {
+      return `/Uploads/${file.filename}`;
+    });
+    res.status(200).json({
+      urls,
+    });
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
 const fetchAllProducts = async (req, res) => {
-  console.log("query:", req.query);
   try {
     let query = Product.find({});
     let totalProductQuery = Product.find({});
@@ -130,4 +142,5 @@ export {
   updateProductById,
   fetchRecentProducts,
   deleteProductById,
+  uploadImage,
 };
