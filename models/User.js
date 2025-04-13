@@ -6,8 +6,14 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: Buffer, required: true },
   role: { type: String, required: true, default: "user" },
-  address: { type: Schema.Types.Mixed },
-  orders: { type: Schema.Types.Mixed },
+  address: {
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    zipCode: { type: String, required: true },
+    country: { type: String, required: true },
+  },
+  orders: [{ type: Schema.Types.ObjectId, ref: "Order" }],
   salt: Buffer,
 });
 

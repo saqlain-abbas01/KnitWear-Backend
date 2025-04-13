@@ -3,14 +3,12 @@ import errorHandler from "../utils/errorhandler.js";
 
 const fetchAllUser = async (req, res) => {
   try {
-    console.log("fecth all users");
-    const users = await User.find({});
+    const users = await User.find({}).populate("orders");
     res.status(200).json({
       success: true,
-      users,
+      data: users,
     });
   } catch (error) {
-    console.error("Error fetching product:", error);
     errorHandler(error, res);
   }
 };
@@ -44,4 +42,18 @@ const updateUserById = async (req, res) => {
   }
 };
 
-export { fecthUserById, updateUserById, fetchAllUser };
+const deleteUser = async (req, res) => {
+  const id = req.params.id;
+  console.log("delete user", id);
+  try {
+    const deleteUser = await User.findByIdAndDelete({ _id: id });
+    res.status(200).json({
+      status: true,
+      data: deleteUser,
+    });
+  } catch (error) {
+    errorHandler(error);
+  }
+};
+
+export { fecthUserById, updateUserById, fetchAllUser, deleteUser };
