@@ -116,7 +116,6 @@ const updateProductById = async (req, res) => {
 
 const deleteProductById = async (req, res) => {
   try {
-    console.log("deleted pro:", req.params.id);
     const id = req.params.id;
     if (!id) {
       return res.status(400).json({
