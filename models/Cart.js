@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
-const cartSchema = new Schema({
-  qauntity: { type: Number, required: true },
-  product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-});
+const cartSchema = new Schema(
+  {
+    qauntity: { type: Number, required: true },
+    product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const virtuals = cartSchema.virtual("id");
 virtuals.get(function () {

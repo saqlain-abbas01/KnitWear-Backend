@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 
-const categorySchema = new Schema({
-  label: { type: String, required: true, unique: true },
-  value: { type: String, required: true, unique: true },
-});
+const categorySchema = new Schema(
+  {
+    label: { type: String, required: true, unique: true },
+    value: { type: String, required: true, unique: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const virtuals = categorySchema.virtual("id");
 virtuals.get(function () {
