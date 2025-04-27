@@ -24,6 +24,11 @@ const productSchema = new Schema(
     brand: { type: String, required: true },
     category: { type: String, required: true },
     images: { type: [String], required: true },
+    size: {
+      type: String,
+      enum: ["xs", "s", "m", "l", "xl"], // <-- allowed values
+      required: true, // or false, depending if you want it mandatory
+    },
     // colors: { type: [Schema.Types.Mixed] },
     // sizes: { type: [Schema.Types.Mixed] },
     // highlights: { type: [String] },

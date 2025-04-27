@@ -28,25 +28,51 @@ const uploadImage = async (req, res) => {
   }
 };
 
-const fetchAllProducts = async (req, res) => {
+const fetchFilterProducts = async (req, res) => {
+  console.log("req query", req.query);
   try {
     let query = Product.find({});
     let totalProductQuery = Product.find({});
-    if (req.query.category) {
-      query = query.find({ category: req.query.category });
-      totalProductQuery = totalProductQuery.find({
-        category: req.query.category,
+    if (req.query.category && req.query.category !== "all") {
+      const category = req.query.category.trim();
+      query = query.find({
+        category: {
+          $regex: `^${category}\\s*$`,
+          $options: "i",
+        },
       });
+      totalProductQuery = totalProductQuery.find({
+        category: {
+          $regex: `^${category}\\s*$`,
+          $options: "i",
+        },
+      });
+    }
+    if (req.query.size && req.query.size !== "all") {
+      query = query.find({ size: req.query.size });
+      totalProductQuery = totalProductQuery.find({ size: req.query.size });
     }
     if (req.query.brand) {
-      query = query.find({ brand: req.query.brand });
-      totalProductQuery = totalProductQuery.find({ brand: req.query.brand });
+      let brands = req.query.brand;
+
+      if (!Array.isArray(brands)) {
+        brands = [brands];
+      }
+      query = query.find({ brand: { $in: brands } });
+      totalProductQuery = totalProductQuery.find({ brand: { $in: brands } });
     }
-    if (req.query._sort && req.query._order) {
-      query = query.sort({ [req.query._sort]: req.query._order });
-      totalProductQuery = totalProductQuery.sort({
-        [req.query._sort]: req.query._order,
-      });
+    if (req.query._sort) {
+      const sortOption = req.query._sort;
+      if (sortOption === "newest") {
+        query = query.sort({ createdAt: -1 }); // Newest first
+        totalProductQuery = totalProductQuery.sort({ createdAt: -1 });
+      } else if (sortOption === "price-low") {
+        query = query.sort({ price: 1 }); // Low to high
+        totalProductQuery = totalProductQuery.sort({ price: 1 });
+      } else if (sortOption === "price-high") {
+        query = query.sort({ price: -1 }); // High to low
+        totalProductQuery = totalProductQuery.sort({ price: -1 });
+      }
     }
 
     if (req.query._page && req.query._limit) {
@@ -56,7 +82,7 @@ const fetchAllProducts = async (req, res) => {
     }
     const products = await query.exec();
     const totalProducts = await totalProductQuery.countDocuments().exec();
-    console.log(totalProducts);
+    console.log("filter products", products);
     res.set("X-Total-Count", totalProducts);
     res.status(200).json({
       success: true,
@@ -136,7 +162,7 @@ const deleteProductById = async (req, res) => {
 
 export {
   createProduct,
-  fetchAllProducts,
+  fetchFilterProducts,
   fecthProductsById,
   updateProductById,
   fetchRecentProducts,

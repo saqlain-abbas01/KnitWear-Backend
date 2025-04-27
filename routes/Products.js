@@ -2,7 +2,7 @@ import express from "express";
 import {
   createProduct,
   fecthProductsById,
-  fetchAllProducts,
+  fetchFilterProducts,
   updateProductById,
   fetchRecentProducts,
   deleteProductById,
@@ -12,7 +12,7 @@ const router = express.Router();
 
 router
   .post("/", createProduct)
-  .get("/", fetchAllProducts)
+  .get("/", fetchFilterProducts)
   .get("/recents", fetchRecentProducts)
   .get("/:id", fecthProductsById)
   .patch("/:id", updateProductById)
