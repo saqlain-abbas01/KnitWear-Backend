@@ -52,9 +52,9 @@ const fetchFilterProducts = async (req, res) => {
       query = query.find({ size: req.query.size });
       totalProductQuery = totalProductQuery.find({ size: req.query.size });
     }
-    if (req.query.brand) {
-      let brands = req.query.brand;
-
+    if (req.query.brands) {
+      let brands = req.query.brands;
+      console.log(brands);
       if (!Array.isArray(brands)) {
         brands = [brands];
       }
@@ -74,7 +74,6 @@ const fetchFilterProducts = async (req, res) => {
         totalProductQuery = totalProductQuery.sort({ price: -1 });
       }
     }
-
     if (req.query._page && req.query._limit) {
       const pageSize = req.query._limit;
       const page = req.query._page;
