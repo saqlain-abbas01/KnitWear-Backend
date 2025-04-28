@@ -22,18 +22,35 @@ passport.deserializeUser(async (user, done) => {
 export default passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
     console.log("email:", email, "password:", password);
+    console.log("auth user");
+
     try {
       const findUser = await User.findOne({ email: email });
-      if (!findUser) throw new Error("User not found");
-      crypto.pbkdf2Sync(password, findUser.salt, 1000, 64, "sha256"),
-        async function (err, password) {
-          if (!crypto.timingSafeEqual(findUser.password, password)) {
-            return done(null, false, { message: "invalid cradentails" });
-          }
-        };
-      done(null, sanitizeUser(findUser));
+      if (!findUser) {
+        return done(null, false, {
+          message: "Email or password does not match",
+        });
+      }
+
+      // Hash the entered password using the stored salt
+      const hashedPassword = crypto.pbkdf2Sync(
+        password,
+        findUser.salt,
+        1000,
+        64,
+        "sha256"
+      );
+
+      // Compare the hashed password (Buffer) with the stored password (Buffer)
+      if (!crypto.timingSafeEqual(findUser.password, hashedPassword)) {
+        return done(null, false, {
+          message: "Email or password does not match",
+        });
+      }
+      console.log("logged in");
+      return done(null, sanitizeUser(findUser));
     } catch (err) {
-      done(err, null);
+      return done(err, null);
     }
   })
 );

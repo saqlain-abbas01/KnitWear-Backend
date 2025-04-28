@@ -5,6 +5,12 @@ import passport from "passport";
 const router = express.Router();
 
 router.post("/signUp", createUser);
-router.post("/signin", passport.authenticate("local"), logInUser);
+router.post(
+  "/signIn",
+  passport.authenticate("local", {
+    failureMessage: true,
+  }),
+  logInUser
+);
 
 export default router;
