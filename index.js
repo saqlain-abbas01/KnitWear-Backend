@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
 import cors from "cors";
-import session from "express-session";
+// import session from "express-session";
 import passport from "passport";
 import productRoutes from "./routes/Products.js";
 import categoriesRoutes from "./routes/Category.js";
@@ -16,6 +16,7 @@ import multer from "multer";
 import { uploadImage } from "./controllers/Products.js";
 import { fileURLToPath } from "url";
 import path from "path";
+import { isAuth } from "./utils/common.js";
 
 // import { isAuth } from "./utils/common.js";
 
@@ -23,23 +24,23 @@ const server = express();
 
 dotenv.config();
 
-server.use(
-  session({
-    secret: "keyboard cart",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+// server.use(
+//   session({
+//     secret: "keyboard cart",
+//     resave: false,
+//     saveUninitialized: false,
+//   })
+// );
 
 server.use(passport.initialize());
-server.use(passport.session());
+// server.use(passport.session());
 
 server.use(express.json());
 
 server.use(
   cors({
-    origin: "*", // Allow all origins (you can restrict this if needed)
-    allowedHeaders: ["*"], // Allow all headers (for requests)
+    origin: "http://localhost:3000",
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow all headers (for requests)
     exposedHeaders: ["X-Total-Count"], // Expose specific custom headers to the client
     credentials: true, // Set to true if you need cookies/auth
   })
@@ -75,7 +76,7 @@ server.use("/api/upload", upload.array("images"), uploadImage);
 server.use("/products", productRoutes);
 server.use("/categories", categoriesRoutes);
 server.use("/brands", brandsRoutes);
-server.use("/user", userRoutes);
+server.use("/user", isAuth(), userRoutes);
 server.use("/auth", authRoutes);
 server.use("/carts", cartRoutes);
 server.use("/orders", orderRoutes);

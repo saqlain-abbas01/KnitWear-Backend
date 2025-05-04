@@ -1,25 +1,28 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
+import { sanitizeUser } from "../utils/common.js";
+import { Strategy as JwtStrategy } from "passport-jwt";
+import cookie from "cookie";
+
 import User from "../models/User.js";
 import crypto from "crypto";
-import { sanitizeUser } from "../utils/common.js";
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// });
 
-passport.deserializeUser(async (user, done) => {
-  console.log("call deserializer:", user);
-  try {
-    const findUser = await User.findOne({ id: user.id });
-    if (!findUser) throw new Error("user not found");
-    done(null, sanitizeUser(findUser));
-  } catch (err) {
-    done(err, null);
-  }
-});
+// passport.deserializeUser(async (user, done) => {
+//   console.log("call deserializer:", user);
+//   try {
+//     const findUser = await User.findOne({ id: user.id });
+//     if (!findUser) throw new Error("user not found");
+//     done(null, sanitizeUser(findUser));
+//   } catch (err) {
+//     done(err, null);
+//   }
+// });
 
-export default passport.use(
+passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
     console.log("email:", email, "password:", password);
     console.log("auth user");
@@ -54,3 +57,35 @@ export default passport.use(
     }
   })
 );
+
+const cookieExtractor = function (req) {
+  console.log("this runs");
+  let token = null;
+  if (req && req.headers && req.headers.cookie) {
+    const cookies = cookie.parse(req.headers.cookie);
+    token = cookies.auth_token;
+  }
+  console.log("extract cookie", token);
+  return token;
+};
+const jwtOptions = {
+  jwtFromRequest: cookieExtractor,
+  secretOrKey: process.env.JWT_SECRET,
+};
+
+passport.use(
+  new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
+    console.log("jwtpayload", jwtPayload);
+    try {
+      const user = await User.findById(jwtPayload.id);
+      if (!user) {
+        return done(null, false);
+      }
+      return done(null, sanitizeUser(user));
+    } catch (err) {
+      return done(err, false);
+    }
+  })
+);
+
+export default passport;

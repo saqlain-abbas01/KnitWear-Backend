@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import { sanitizeUser } from "../utils/common.js";
 import errorHandler from "../utils/errorhandler.js";
 import crypto from "crypto";
+import passport from "../strategies/local_strategy.js";
+import jwt from "jsonwebtoken";
 
 const createUser = async (req, res) => {
   try {
@@ -34,8 +36,30 @@ const createUser = async (req, res) => {
   }
 };
 
-const logInUser = (req, res) => {
-  res.send(sanitizeUser(req.user));
+const logInUser = (req, res, next) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err || !user) {
+      return res.status(401).json({ message: info?.message || "Login failed" });
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    console.log("token:", token);
+    res.cookie("auth_token", token, {
+      httpOnly: false,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.json({ user });
+  })(req, res, next);
 };
 
-export { createUser, logInUser };
+const isAuthUser = (req, res) => {
+  req.body;
+  return res.json({ user: req.body });
+};
+
+export { createUser, logInUser, isAuthUser };

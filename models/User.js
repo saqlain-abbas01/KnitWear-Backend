@@ -7,6 +7,7 @@ const userSchema = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: Buffer, required: true },
     role: { type: String, required: true, default: "user" },
+    images: { type: String },
     address: {
       street: { type: String },
       city: { type: String },

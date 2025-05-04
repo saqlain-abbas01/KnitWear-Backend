@@ -8,6 +8,7 @@ router.post("/signUp", createUser);
 router.post(
   "/signIn",
   passport.authenticate("local", {
+    session: false,
     failureMessage: true,
   }),
   logInUser

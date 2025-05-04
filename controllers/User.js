@@ -15,12 +15,13 @@ const fetchAllUser = async (req, res) => {
 
 const fecthUserById = async (req, res) => {
   try {
-    const id = req.params.id;
-    console.log(id);
-    const user = await User.findById(id, "name email id").exec();
+    const id = req.user.id;
+    const user = await User.findById(id, "name email address")
+      .populate("orders")
+      .exec();
     res.status(200).json({
       success: true,
-      user,
+      user: user,
     });
   } catch (error) {
     errorHandler(error, res);
@@ -28,8 +29,9 @@ const fecthUserById = async (req, res) => {
 };
 
 const updateUserById = async (req, res) => {
+  console.log("update user", req.body);
   try {
-    const id = req.params.id;
+    const id = req.user.id;
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
       new: true,
     });
