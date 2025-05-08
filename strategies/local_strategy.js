@@ -29,8 +29,9 @@ passport.use(
 
     try {
       const findUser = await User.findOne({ email: email });
+      console.log("user", findUser);
       if (!findUser) {
-        return done(null, false, {
+        return done("user does not exist", false, {
           message: "Email or password does not match",
         });
       }
@@ -43,7 +44,7 @@ passport.use(
         64,
         "sha256"
       );
-
+      console.log("check password");
       // Compare the hashed password (Buffer) with the stored password (Buffer)
       if (!crypto.timingSafeEqual(findUser.password, hashedPassword)) {
         return done(null, false, {
@@ -53,13 +54,13 @@ passport.use(
       console.log("logged in");
       return done(null, sanitizeUser(findUser));
     } catch (err) {
-      return done(err, null);
+      return done(err);
     }
   })
 );
 
 const cookieExtractor = function (req) {
-  console.log("this runs");
+  console.log("this runs", req.headers);
   let token = null;
   if (req && req.headers && req.headers.cookie) {
     const cookies = cookie.parse(req.headers.cookie);
@@ -68,6 +69,7 @@ const cookieExtractor = function (req) {
   console.log("extract cookie", token);
   return token;
 };
+
 const jwtOptions = {
   jwtFromRequest: cookieExtractor,
   secretOrKey: process.env.JWT_SECRET,

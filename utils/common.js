@@ -5,7 +5,7 @@ const sanitizeUser = (user) => {
 };
 
 const isAuth = () => {
-  console.log("isAuth");
+  console.log("isAuth runs");
   return passport.authenticate("jwt", { session: false });
 };
 

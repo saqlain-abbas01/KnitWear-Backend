@@ -3,9 +3,10 @@ import { Schema } from "mongoose";
 
 const cartSchema = new Schema(
   {
-    qauntity: { type: Number, required: true },
+    quantity: { type: Number, required: true },
     product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    size: { type: String, reuired: true },
   },
   {
     timestamps: true,

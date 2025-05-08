@@ -39,7 +39,10 @@ const createUser = async (req, res) => {
 const logInUser = (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
-      return res.status(401).json({ message: info?.message || "Login failed" });
+      console.log("error auth");
+      return res
+        .status(401)
+        .json({ success: false, message: info?.message || "Login failed" });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -47,13 +50,13 @@ const logInUser = (req, res, next) => {
     });
     console.log("token:", token);
     res.cookie("auth_token", token, {
-      httpOnly: false,
+      httpOnly: true,
       secure: false,
       sameSite: "lax",
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
 
-    return res.json({ user });
+    return res.json({ sucess: true, user });
   })(req, res, next);
 };
 

@@ -3,9 +3,11 @@ import errorHandler from "../utils/errorhandler.js";
 
 const createCart = async (req, res) => {
   try {
-    const { user, product, qauntity } = req.body;
-    console.log("user:", req.body);
-    const cart = new Cart({ user, product, qauntity });
+    const { product, quantity, size } = req.body;
+    const user = req.user.id;
+    console.log("user:", req.body, "id", user);
+
+    const cart = new Cart({ quantity, product, user, size });
     await cart.save();
 
     res.status(201).json({

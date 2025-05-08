@@ -14,9 +14,11 @@ import orderRoutes from "./routes/Order.js";
 import "./strategies/local_strategy.js";
 import multer from "multer";
 import { uploadImage } from "./controllers/Products.js";
-import { fileURLToPath } from "url";
-import path from "path";
 import { isAuth } from "./utils/common.js";
+import { storage } from "./multer/uploadimage.js";
+// import { fileURLToPath } from "url";
+// import path from "path";
+// import { storage } from "./multer/uploadimage.js";
 
 // import { isAuth } from "./utils/common.js";
 
@@ -40,35 +42,35 @@ server.use(express.json());
 server.use(
   cors({
     origin: "http://localhost:3000",
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow all headers (for requests)
-    exposedHeaders: ["X-Total-Count"], // Expose specific custom headers to the client
-    credentials: true, // Set to true if you need cookies/auth
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["X-Total-Count"],
+    credentials: true,
   })
 );
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-const uploadsDir = path.join(__dirname, "/public/uploads");
-server.use("/uploads", express.static(uploadsDir));
+// const uploadsDir = path.join(__dirname, "/public/uploads");
+// server.use("/uploads", express.static(uploadsDir));
 
-server.use(
-  "/public/uploads",
-  express.static(path.join(__dirname, "public/uploads"))
-);
+// server.use(
+//   "/public/uploads",
+//   express.static(path.join(__dirname, "public/uploads"))
+// );
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadsDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`
-    );
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, uploadsDir);
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(
+//       null,
+//       `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`
+//     );
+//   },
+// });
 
 const upload = multer({ storage: storage });
 
@@ -78,7 +80,7 @@ server.use("/categories", categoriesRoutes);
 server.use("/brands", brandsRoutes);
 server.use("/user", isAuth(), userRoutes);
 server.use("/auth", authRoutes);
-server.use("/carts", cartRoutes);
+server.use("/carts", isAuth(), cartRoutes);
 server.use("/orders", orderRoutes);
 
 connectDB();
