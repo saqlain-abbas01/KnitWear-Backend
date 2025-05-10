@@ -60,13 +60,12 @@ passport.use(
 );
 
 const cookieExtractor = function (req) {
-  console.log("this runs", req.headers);
   let token = null;
   if (req && req.headers && req.headers.cookie) {
     const cookies = cookie.parse(req.headers.cookie);
     token = cookies.auth_token;
   }
-  console.log("extract cookie", token);
+
   return token;
 };
 
@@ -77,7 +76,6 @@ const jwtOptions = {
 
 passport.use(
   new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
-    console.log("jwtpayload", jwtPayload);
     try {
       const user = await User.findById(jwtPayload.id);
       if (!user) {
