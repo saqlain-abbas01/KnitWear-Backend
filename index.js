@@ -11,28 +11,16 @@ import userRoutes from "./routes/User.js";
 import authRoutes from "./routes/Auth.js";
 import cartRoutes from "./routes/Cart.js";
 import orderRoutes from "./routes/Order.js";
+import wishlistRoutes from "./routes/Wishlist.js";
 import "./strategies/local_strategy.js";
 import multer from "multer";
 import { uploadImage } from "./controllers/Products.js";
 import { isAuth } from "./utils/common.js";
 import { storage } from "./multer/uploadimage.js";
-// import { fileURLToPath } from "url";
-// import path from "path";
-// import { storage } from "./multer/uploadimage.js";
-
-// import { isAuth } from "./utils/common.js";
 
 const server = express();
 
 dotenv.config();
-
-// server.use(
-//   session({
-//     secret: "keyboard cart",
-//     resave: false,
-//     saveUninitialized: false,
-//   })
-// );
 
 server.use(passport.initialize());
 // server.use(passport.session());
@@ -48,30 +36,6 @@ server.use(
   })
 );
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
-// const uploadsDir = path.join(__dirname, "/public/uploads");
-// server.use("/uploads", express.static(uploadsDir));
-
-// server.use(
-//   "/public/uploads",
-//   express.static(path.join(__dirname, "public/uploads"))
-// );
-
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, uploadsDir);
-//   },
-//   filename: function (req, file, cb) {
-//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-//     cb(
-//       null,
-//       `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`
-//     );
-//   },
-// });
-
 const upload = multer({ storage: storage });
 
 server.use("/api/upload", upload.array("images"), uploadImage);
@@ -82,6 +46,7 @@ server.use("/user", isAuth(), userRoutes);
 server.use("/auth", authRoutes);
 server.use("/carts", isAuth(), cartRoutes);
 server.use("/orders", isAuth(), orderRoutes);
+server.use("/wishlist", isAuth(), wishlistRoutes);
 
 connectDB();
 
