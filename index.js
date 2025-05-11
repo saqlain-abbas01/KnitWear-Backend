@@ -81,7 +81,7 @@ server.use("/brands", brandsRoutes);
 server.use("/user", isAuth(), userRoutes);
 server.use("/auth", authRoutes);
 server.use("/carts", isAuth(), cartRoutes);
-server.use("/orders", orderRoutes);
+server.use("/orders", isAuth(), orderRoutes);
 
 connectDB();
 

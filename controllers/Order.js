@@ -3,6 +3,7 @@ import Order from "../models/Orders.js";
 import errorHandler from "../utils/errorhandler.js";
 
 const createOrder = async (req, res) => {
+  console.log("create order", req.body);
   try {
     const newOrder = new Order(req.body);
     await newOrder.save();
