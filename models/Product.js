@@ -29,10 +29,6 @@ const productSchema = new Schema(
       enum: ["xs", "s", "m", "l", "xl"], // <-- allowed values
       required: true, // or false, depending if you want it mandatory
     },
-    // colors: { type: [Schema.Types.Mixed] },
-    // sizes: { type: [Schema.Types.Mixed] },
-    // highlights: { type: [String] },
-    // discountPrice: { type: Number },
     deleted: { type: Boolean, default: false },
   },
   {
@@ -51,6 +47,9 @@ productSchema.set("toJSON", {
     delete ret._id;
   },
 });
+
+productSchema.index({ title: "text" });
+
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;

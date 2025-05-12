@@ -12,6 +12,7 @@ import authRoutes from "./routes/Auth.js";
 import cartRoutes from "./routes/Cart.js";
 import orderRoutes from "./routes/Order.js";
 import wishlistRoutes from "./routes/Wishlist.js";
+import searchRoutes from "./routes/Search.js";
 import "./strategies/local_strategy.js";
 import multer from "multer";
 import { uploadImage } from "./controllers/Products.js";
@@ -47,6 +48,7 @@ server.use("/auth", authRoutes);
 server.use("/carts", isAuth(), cartRoutes);
 server.use("/orders", isAuth(), orderRoutes);
 server.use("/wishlist", isAuth(), wishlistRoutes);
+server.use("/search", searchRoutes);
 
 connectDB();
 
