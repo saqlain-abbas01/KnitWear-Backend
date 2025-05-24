@@ -7,46 +7,36 @@ import cookie from "cookie";
 import User from "../models/User.js";
 import crypto from "crypto";
 
-// passport.serializeUser((user, done) => {
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser(async (user, done) => {
-//   console.log("call deserializer:", user);
-//   try {
-//     const findUser = await User.findOne({ id: user.id });
-//     if (!findUser) throw new Error("user not found");
-//     done(null, sanitizeUser(findUser));
-//   } catch (err) {
-//     done(err, null);
-//   }
-// });
-
 passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
-    console.log("email:", email, "password:", password);
-    console.log("auth user");
+    console.log("auth user", password);
 
     try {
       const findUser = await User.findOne({ email: email });
-      console.log("user", findUser);
+
       if (!findUser) {
         return done("user does not exist", false, {
           message: "Email or password does not match",
         });
       }
-
+      const storedSalt = Buffer.from(findUser.salt, "hex");
+      const storedPassword = Buffer.from(findUser.password, "hex");
       // Hash the entered password using the stored salt
       const hashedPassword = crypto.pbkdf2Sync(
         password,
-        findUser.salt,
+        storedSalt,
         1000,
         64,
         "sha256"
       );
-      console.log("check password");
+      console.log(
+        "storedpassword",
+        storedPassword,
+        "hashPassword",
+        hashedPassword
+      );
       // Compare the hashed password (Buffer) with the stored password (Buffer)
-      if (!crypto.timingSafeEqual(findUser.password, hashedPassword)) {
+      if (!crypto.timingSafeEqual(storedPassword, hashedPassword)) {
         return done(null, false, {
           message: "Email or password does not match",
         });

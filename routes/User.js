@@ -6,12 +6,16 @@ import {
   fetchAllUser,
   updateUserById,
   deleteUser,
+  changePassword,
+  resetPassword,
 } from "../controllers/User.js";
 
 const router = express.Router();
 
 router
   .post("/", createUser)
+  .post("/changePassword", changePassword)
+  .post("/resetPassword", resetPassword)
   .get("/", fetchAllUser)
   .get("/profile", fecthUserById)
   .patch("/update", updateUserById)
