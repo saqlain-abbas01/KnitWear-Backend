@@ -8,6 +8,7 @@ import {
   deleteUser,
   changePassword,
   resetPassword,
+  userLogout,
 } from "../controllers/User.js";
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router
   .post("/", createUser)
   .post("/changePassword", changePassword)
   .post("/resetPassword", resetPassword)
+  .post("/logout", userLogout)
   .get("/", fetchAllUser)
   .get("/profile", fecthUserById)
   .patch("/update", updateUserById)

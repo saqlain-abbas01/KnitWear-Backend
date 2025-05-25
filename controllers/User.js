@@ -125,6 +125,17 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const userLogout = async (req, res) => {
+  console.log("logout user");
+  res.clearCookie("auth_token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  });
+
+  return res.json({ success: true, message: "Logged out successfully" });
+};
+
 export {
   fecthUserById,
   updateUserById,
@@ -132,4 +143,5 @@ export {
   deleteUser,
   changePassword,
   resetPassword,
+  userLogout,
 };
