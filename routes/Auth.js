@@ -1,6 +1,7 @@
 import express from "express";
-import { createUser, logInUser } from "../controllers/Auth.js";
+import { createUser, logInUser, googleAuth } from "../controllers/Auth.js";
 import passport from "passport";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -12,6 +13,19 @@ router.post(
     failureMessage: true,
   }),
   logInUser
+);
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/login",
+  }),
+  googleAuth
 );
 
 export default router;

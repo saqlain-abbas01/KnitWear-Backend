@@ -14,6 +14,7 @@ import orderRoutes from "./routes/Order.js";
 import wishlistRoutes from "./routes/Wishlist.js";
 import searchRoutes from "./routes/Search.js";
 import "./strategies/local_strategy.js";
+import "./strategies/google_strategy.js";
 import uploadRoute from "./controllers/uploadImage.js";
 // import multer from "multer";
 // import { uploadImage } from "./controllers/Products.js";

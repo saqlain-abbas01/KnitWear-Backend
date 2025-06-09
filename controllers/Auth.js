@@ -39,7 +39,6 @@ const createUser = async (req, res) => {
 const logInUser = (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
-      console.log("error auth");
       return res
         .status(401)
         .json({ success: false, message: info?.message || "Login failed" });
@@ -60,9 +59,27 @@ const logInUser = (req, res, next) => {
   })(req, res, next);
 };
 
+const googleAuth = (req, res) => {
+  // Generate JWT and set cookie
+  console.log("req from goole auth", req.user);
+  const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+
+  res.cookie("auth_token", token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    maxAge: 2 * 24 * 60 * 60 * 1000,
+  });
+
+  // Redirect to frontend with token in cookie
+  res.redirect("http://localhost:3000"); // or your app dashboard
+};
+
 const isAuthUser = (req, res) => {
   req.body;
   return res.json({ user: req.body });
 };
 
-export { createUser, logInUser, isAuthUser };
+export { createUser, logInUser, isAuthUser, googleAuth };
