@@ -24,6 +24,7 @@
     "prettier": "^3.5.3"
   },
   "dependencies": {
+    "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
