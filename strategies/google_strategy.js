@@ -12,7 +12,6 @@ passport.use(
     async function (accessToken, refreshToken, profile, done) {
       try {
         const user = await googleAuth(profile);
-
         return done(null, user);
       } catch (err) {
         return done(err, null);

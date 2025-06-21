@@ -9,14 +9,14 @@ import crypto from "crypto";
 
 passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
-    console.log("auth user", password);
+    console.log("auth user password:", password);
 
     try {
       const findUser = await User.findOne({ email: email });
 
       if (!findUser) {
-        return done("user does not exist", false, {
-          message: "Email or password does not match",
+        return done(null, false, {
+          message: "User does not exist",
         });
       }
       const storedSalt = Buffer.from(findUser.salt, "hex");
@@ -29,16 +29,11 @@ passport.use(
         64,
         "sha256"
       );
-      console.log(
-        "storedpassword",
-        storedPassword,
-        "hashPassword",
-        hashedPassword
-      );
+  
       // Compare the hashed password (Buffer) with the stored password (Buffer)
       if (!crypto.timingSafeEqual(storedPassword, hashedPassword)) {
         return done(null, false, {
-          message: "Email or password does not match",
+          message: "Password does not match",
         });
       }
       console.log("logged in");
