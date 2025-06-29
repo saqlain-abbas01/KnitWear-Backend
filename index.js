@@ -32,7 +32,11 @@ server.use(express.json());
 
 server.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "https://knit-wear.vercel.app",
+      "http://localhost:3000",
+      "http://localhost:3001",
+    ],
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["X-Total-Count"],
     credentials: true,
@@ -51,6 +55,8 @@ server.use("/carts", isAuth(), cartRoutes);
 server.use("/orders", isAuth(), orderRoutes);
 server.use("/wishlist", isAuth(), wishlistRoutes);
 server.use("/search", searchRoutes);
+
+server.set("trust proxy", 1); // trust first proxy
 
 connectDB();
 

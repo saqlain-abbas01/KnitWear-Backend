@@ -38,13 +38,15 @@ const createUser = async (req, res) => {
 
 const logInUser = (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
-
     if (err) {
       return res.status(500).json({ success: false, message: "Server error" });
     }
 
     if (!user) {
-      return res.status(401).json({ success: false, message: info?.message || "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        message: info?.message || "Invalid credentials",
+      });
     }
 
     // If authentication succeeded
@@ -54,7 +56,7 @@ const logInUser = (req, res, next) => {
 
     res.cookie("auth_token", token, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "lax",
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
