@@ -74,7 +74,7 @@ const googleAuth = (req, res) => {
 
   res.cookie("auth_token", token, {
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: "none",
     maxAge: 2 * 24 * 60 * 60 * 1000,
   });
