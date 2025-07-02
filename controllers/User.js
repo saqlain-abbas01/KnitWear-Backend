@@ -31,7 +31,7 @@ const fecthUserById = async (req, res) => {
 };
 
 const updateUserById = async (req, res) => {
-  console.log("update user", req.body.image);
+
   try {
     const id = req.user.id;
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
@@ -48,7 +48,6 @@ const updateUserById = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   const id = req.params.id;
-  console.log("delete user", id);
   try {
     const deleteUser = await User.findByIdAndDelete({ _id: id });
     res.status(200).json({
@@ -61,14 +60,14 @@ const deleteUser = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  console.log("body", req.body);
+
   const { email } = req.body;
 
   if (!email) {
     return res.status(400).json({ message: "Email is required" });
   }
 
-  const resetLink = `http://localhost:3000/auth/resetpassword?email=${encodeURIComponent(email)}`;
+  const resetLink = `https://knit-wear.vercel.app/auth/resetpassword?email=${encodeURIComponent(email)}`;
 
   try {
     const info = await sendEmail({
@@ -76,7 +75,27 @@ const changePassword = async (req, res) => {
       to: email,
       subject: "Reset your password",
       text: `Click the following link to reset your password: ${resetLink}`,
-      html: `<p>Click the link below to reset your password:</p><a href="${resetLink}">${resetLink}</a>`,
+      html: `
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+      <h2 style="color: #007bff;">Reset Your Password</h2>
+      <p>Hello,</p>
+      <p>You recently requested to reset your password. Click the button below to proceed:</p>
+      <a href="${resetLink}" style="
+        display: inline-block;
+        padding: 12px 20px;
+        margin: 20px 0;
+        font-size: 16px;
+        color: #fff;
+        background-color: #007bff;
+        text-decoration: none;
+        border-radius: 5px;
+      ">Reset Password</a>
+      <p>If the button doesn't work, copy and paste the following link into your browser:</p>
+      <p><a href="${resetLink}" style="color: #007bff;">${resetLink}</a></p>
+      <p style="margin-top: 40px;">If you didn’t request this, you can safely ignore this email.</p>
+      <p>Best regards,<br><strong>The Admin Team</strong></p>
+    </div>
+  `,
     });
 
     res.status(200).json({ message: "Password reset email sent", info });
@@ -126,11 +145,11 @@ const resetPassword = async (req, res) => {
 };
 
 const userLogout = async (req, res) => {
-  console.log("logout user");
+
   res.clearCookie("auth_token", {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
   });
 
   return res.json({ success: true, message: "Logged out successfully" });

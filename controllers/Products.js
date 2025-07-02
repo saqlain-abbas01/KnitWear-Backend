@@ -15,7 +15,7 @@ const createProduct = async (req, res) => {
 };
 
 const uploadImage = async (req, res) => {
-  console.log("upload file", req.files);
+
   try {
     const urls = req.files.map((file) => {
       return `/Uploads/${file.filename}`;
@@ -29,7 +29,7 @@ const uploadImage = async (req, res) => {
 };
 
 const fetchFilterProducts = async (req, res) => {
-  console.log("req query", req.query);
+  
   try {
     let query = Product.find({});
     let totalProductQuery = Product.find({});
@@ -54,7 +54,7 @@ const fetchFilterProducts = async (req, res) => {
     }
     if (req.query.brands) {
       let brands = req.query.brands;
-      console.log(brands);
+ 
       if (!Array.isArray(brands)) {
         brands = [brands];
       }
@@ -81,7 +81,7 @@ const fetchFilterProducts = async (req, res) => {
     }
     const products = await query.exec();
     const totalProducts = await totalProductQuery.countDocuments().exec();
-    console.log("filter products", products);
+   
     res.set("X-Total-Count", totalProducts);
     res.status(200).json({
       success: true,
@@ -112,7 +112,7 @@ const fetchRecentProducts = async (req, res) => {
 const fecthProductsById = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
+
     const product = await Product.findById(id);
     res.status(200).json({
       success: true,
@@ -126,7 +126,7 @@ const fecthProductsById = async (req, res) => {
 const updateProductById = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("id:", id);
+  
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
@@ -149,7 +149,7 @@ const deleteProductById = async (req, res) => {
       });
     }
     const deleteProduct = await Product.deleteOne({ _id: id });
-    console.log("deleted product:", deleteProduct);
+
     res.json({
       status: true,
       deleteProduct,

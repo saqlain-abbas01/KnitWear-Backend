@@ -4,9 +4,9 @@ import { sendEmail } from "../utils/mailer.js";
 import errorHandler from "../utils/errorhandler.js";
 
 const createOrder = async (req, res) => {
-  console.log("create order", req.body);
+
   const email = req.user.email;
-  console.log("email", email);
+ 
   try {
     const newOrder = new Order(req.body);
     await newOrder.save();
@@ -15,7 +15,21 @@ const createOrder = async (req, res) => {
       from: "admin@gmail.com",
       to: "asaqlain228@gmail.com",
       subject: "Order Confirmation",
-      html: `<p>Hello, your order with ID <b>${newOrder._id}</b> has been successfully created!</p>`,
+    html: `
+     <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+    <h2 style="color: #4CAF50;">Thank You for Your Order!</h2>
+    <p>Hello,</p>
+    <p>Your order has been successfully created. Below are the details:</p>
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+      <tr>
+        <td style="padding: 10px; border: 1px solid #ddd;"><strong>Order ID:</strong></td>
+        <td style="padding: 10px; border: 1px solid #ddd;">${newOrder._id}</td>
+      </tr>
+    </table>
+    <p>We'll notify you once your order is shipped.</p>
+    <p style="margin-top: 30px;">Best regards,<br><strong>Knitwear Team</strong></p>
+  </div>
+`
     });
 
     res.status(201).json({

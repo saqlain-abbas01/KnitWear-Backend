@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/upload", upload.array("images", 5), async (req, res) => {
   try {
     const files = req.files;
-    console.log("files", files);
+  
     if (!files || files.length === 0) {
       return res
         .status(400)
@@ -20,7 +20,7 @@ router.post("/upload", upload.array("images", 5), async (req, res) => {
       const result = await cloudinary.uploader.upload(file.path);
       uploadResults.push(result.secure_url);
     }
-    console.log("upload results", uploadResults);
+   
     res.status(200).json({
       success: true,
       message: "Images uploaded successfully",

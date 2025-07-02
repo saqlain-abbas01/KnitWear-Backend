@@ -2,16 +2,13 @@ import WishList from "../models/WishList.js";
 import errorHandler from "../utils/errorhandler.js";
 
 const addWishList = async (req, res) => {
-  console.log("body", req.body);
+
   const { productId } = req.body;
   const userId = req.user.id;
 
-  console.log("product id to add wishlist", productId);
-  console.log("user id ", userId);
-
   try {
     let userWishList = await WishList.findOne({ user: userId });
-    console.log("current wishlist", userWishList);
+   
 
     let alreadyExists = false;
 

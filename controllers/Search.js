@@ -21,7 +21,7 @@ const fetchSearchProduct = async (req, res) => {
     const searchTerm = q.trim();
     const safeSearchTerm = escapeRegex(searchTerm);
     const regexPattern = `\\b${safeSearchTerm}\\w*`; // Match words starting with searchTerm
-    console.log("regexpattern", regexPattern);
+ 
     // Perform regex search
     const products = await Product.find({
       title: { $regex: regexPattern, $options: "i" }, // Case-insensitive regex search
