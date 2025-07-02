@@ -78,9 +78,12 @@ const googleAuth = (req, res) => {
     sameSite: "lax",
     maxAge: 2 * 24 * 60 * 60 * 1000,
   });
-
+  const redirectUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://knit-wear.vercel.app" // Replace with your actual frontend URL on Vercel or elsewhere
+    : "http://localhost:3000";
   // Redirect to frontend with token in cookie
-  res.redirect("http://localhost:3000"); // or your app dashboard
+  res.redirect(redirectUrl); // or your app dashboard
 };
 
 const isAuthUser = (req, res) => {
