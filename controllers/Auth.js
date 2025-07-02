@@ -57,7 +57,7 @@ const logInUser = (req, res, next) => {
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
 
@@ -67,7 +67,7 @@ const logInUser = (req, res, next) => {
 
 const googleAuth = (req, res) => {
   // Generate JWT and set cookie
-  console.log("req from goole auth", req.user);
+
   const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
@@ -75,7 +75,7 @@ const googleAuth = (req, res) => {
   res.cookie("auth_token", token, {
     httpOnly: true,
     secure: false,
-    sameSite: "lax",
+    sameSite: "none",
     maxAge: 2 * 24 * 60 * 60 * 1000,
   });
   console.log(process.env.NODE_ENV)
