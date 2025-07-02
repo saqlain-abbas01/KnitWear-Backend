@@ -82,4 +82,19 @@ const updateCartById = async (req, res) => {
   }
 };
 
-export { fetchCartByUserId, createCart, deleteCartById, updateCartById };
+const deleteAllCarts = async (req, res) => {
+  console.log("remove carts")
+   const user = req.user.id;
+  try {
+   if (req.query.all === "true") {
+      await Cart.deleteMany({ user });
+      return res.status(200).json({ success: true, message: "All cart items removed" });
+    }
+
+    return res.status(400).json({ success: false, message: "Missing 'all' flag or cart ID" });
+  } catch (error) {
+    errorHandler(error, res);
+  }
+};
+
+export { fetchCartByUserId, createCart, deleteCartById, updateCartById , deleteAllCarts};

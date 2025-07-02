@@ -29,7 +29,7 @@ const uploadImage = async (req, res) => {
 };
 
 const fetchFilterProducts = async (req, res) => {
-  
+   console.log("req body", req.query)
   try {
     let query = Product.find({});
     let totalProductQuery = Product.find({});
@@ -44,6 +44,21 @@ const fetchFilterProducts = async (req, res) => {
       totalProductQuery = totalProductQuery.find({
         category: {
           $regex: `^${category}\\s*$`,
+          $options: "i",
+        },
+      });
+    }
+    if (req.query.type && req.query.type !== "all") {
+       const subCategory = req.query.type.trim();
+      query = query.find({
+        subCategory: {
+          $regex: `^${subCategory}\\s*$`,
+          $options: "i",
+        }
+      });
+      totalProductQuery = totalProductQuery.find({
+        category: {
+          $regex: `^${subCategory}\\s*$`,
           $options: "i",
         },
       });

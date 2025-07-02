@@ -9,7 +9,6 @@ import crypto from "crypto";
 
 passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
-  
 
     try {
       const findUser = await User.findOne({ email: email });

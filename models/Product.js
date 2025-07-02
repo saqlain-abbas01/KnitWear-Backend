@@ -23,6 +23,7 @@ const productSchema = new Schema(
     stock: { type: Number, min: [0, "wrong min stock"], default: 0 },
     brand: { type: String, required: true },
     category: { type: String, required: true },
+    subCategory: {type: String, required: true},
     images: { type: [String], required: true },
     size: {
       type: String,

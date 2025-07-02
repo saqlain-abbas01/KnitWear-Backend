@@ -6,14 +6,7 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 router.post("/signUp", createUser);
-// router.post(
-//   "/signIn",
-//   passport.authenticate("local", {
-//     session: false,
-//     failureMessage: true,
-//   }),
-//   logInUser
-// );
+
 router.post("/signIn",  logInUser);
 
 router.get(
