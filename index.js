@@ -60,6 +60,8 @@ server.set("trust proxy", 1); // trust first proxy
 
 connectDB();
 
-server.listen(process.env.PORT, () => {
+const PORT = process.env.PORT || 4000;
+
+server.listen(PORT, () => {
   console.log("server started");
 });
