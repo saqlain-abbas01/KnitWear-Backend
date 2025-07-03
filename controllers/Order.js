@@ -13,7 +13,7 @@ const createOrder = async (req, res) => {
 
     await sendEmail({
       from: "admin@gmail.com",
-      to: "asaqlain228@gmail.com",
+      to: email,
       subject: "Order Confirmation",
     html: `
      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
@@ -74,8 +74,10 @@ const fetchAllOrders = async (req, res) => {
 const fetchOrderByUserId = async (req, res) => {
   try {
     const userId = req.params.id;
-    const orderItem = await Order.find({ user: userId }).populate("user");
-
+    const orderItem = await Order.find({ user: userId }).populate("user").populate({
+        path: "items.product", 
+        model: "Product",
+      });;
     res.status(200).json({
       success: true,
       order: orderItem,
