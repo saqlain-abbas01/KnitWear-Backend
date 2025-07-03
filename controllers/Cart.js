@@ -4,6 +4,7 @@ import errorHandler from "../utils/errorhandler.js";
 const createCart = async (req, res) => {
   try {
     const { product, quantity, size } = req.body;
+    console.log("product to add to cart", product)
     const user = req.user.id;
   
 
@@ -13,7 +14,7 @@ const createCart = async (req, res) => {
       existingCart.quantity += quantity;
 
       await existingCart.save();
-
+      console.log("existingcart", existingCart)
       return res.status(200).json({
         success: true,
         message: "Cart updated successfully",
@@ -22,7 +23,7 @@ const createCart = async (req, res) => {
     } else {
       const cart = new Cart({ quantity, product, user, size });
       await cart.save();
-
+       console.log("cart", cart)
       return res.status(201).json({
         success: true,
         message: "Product added to cart successfully",
@@ -87,10 +88,11 @@ const deleteAllCarts = async (req, res) => {
    const user = req.user.id;
   try {
    if (req.query.all === "true") {
-      await Cart.deleteMany({ user });
+     const carts = await Cart.deleteMany({ user });
+     console.log("deleted carts", carts)
       return res.status(200).json({ success: true, message: "All cart items removed" });
     }
-
+    
     return res.status(400).json({ success: false, message: "Missing 'all' flag or cart ID" });
   } catch (error) {
     errorHandler(error, res);

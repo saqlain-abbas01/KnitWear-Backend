@@ -13,6 +13,7 @@ router
   .get("/", fetchCartByUserId)
   .post("/", createCart)
   .delete("/:id", deleteCartById)
+  .delete("/", deleteAllCarts)
   .put("/:id", updateCartById)
 
 
