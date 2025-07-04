@@ -15,7 +15,6 @@ const createProduct = async (req, res) => {
 };
 
 const uploadImage = async (req, res) => {
-
   try {
     const urls = req.files.map((file) => {
       return `/Uploads/${file.filename}`;
@@ -29,7 +28,7 @@ const uploadImage = async (req, res) => {
 };
 
 const fetchFilterProducts = async (req, res) => {
-   console.log("req body", req.query)
+  console.log("req body", req.query);
   try {
     let query = Product.find({});
     let totalProductQuery = Product.find({});
@@ -49,12 +48,12 @@ const fetchFilterProducts = async (req, res) => {
       });
     }
     if (req.query.type && req.query.type !== "all") {
-       const subCategory = req.query.type.trim();
+      const subCategory = req.query.type.trim();
       query = query.find({
         subCategory: {
           $regex: `^${subCategory}\\s*$`,
           $options: "i",
-        }
+        },
       });
       totalProductQuery = totalProductQuery.find({
         category: {
@@ -69,7 +68,7 @@ const fetchFilterProducts = async (req, res) => {
     }
     if (req.query.brands) {
       let brands = req.query.brands;
- 
+
       if (!Array.isArray(brands)) {
         brands = [brands];
       }
@@ -96,7 +95,7 @@ const fetchFilterProducts = async (req, res) => {
     }
     const products = await query.exec();
     const totalProducts = await totalProductQuery.countDocuments().exec();
-   
+
     res.set("X-Total-Count", totalProducts);
     res.status(200).json({
       success: true,
@@ -141,7 +140,7 @@ const fecthProductsById = async (req, res) => {
 const updateProductById = async (req, res) => {
   try {
     const id = req.params.id;
-  
+
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
     });
@@ -174,6 +173,37 @@ const deleteProductById = async (req, res) => {
   }
 };
 
+const fetchDiscountProducts = async (req, res) => {
+  try {
+    const page = parseInt(req.query._page) || 1;
+    const limit = parseInt(req.query._limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const pipeline = [
+      { $match: { discountPercentage: { $gt: 1 } } },
+      { $sort: { createdAt: -1 } },
+      {
+        $facet: {
+          products: [{ $skip: skip }, { $limit: limit }],
+          totalCount: [{ $count: "count" }],
+        },
+      },
+    ];
+
+    const result = await Product.aggregate(pipeline);
+    const products = result[0].products;
+    const totalCount = result[0].totalCount[0]?.count || 0;
+
+    res.set("X-Total-Count", totalCount);
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    errorHandler(error, res);
+  }
+};
+
 export {
   createProduct,
   fetchFilterProducts,
@@ -182,4 +212,5 @@ export {
   fetchRecentProducts,
   deleteProductById,
   uploadImage,
+  fetchDiscountProducts,
 };
