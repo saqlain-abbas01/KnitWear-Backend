@@ -1,13 +1,19 @@
 import express from "express";
-import { createUser, logInUser, googleAuth } from "../controllers/Auth.js";
+import {
+  createUser,
+  logInUser,
+  googleAuth,
+  logInAdmin,
+} from "../controllers/Auth.js";
 import passport from "passport";
-import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
 router.post("/signUp", createUser);
 
-router.post("/signIn",  logInUser);
+router.post("/signIn", logInUser);
+
+router.post("/adminSignIn", logInAdmin);
 
 router.get(
   "/google",

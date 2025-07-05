@@ -16,12 +16,8 @@ import searchRoutes from "./routes/Search.js";
 import "./strategies/local_strategy.js";
 import "./strategies/google_strategy.js";
 import uploadRoute from "./controllers/uploadImage.js";
-// import multer from "multer";
-// import { uploadImage } from "./controllers/Products.js";
 import { isAuth } from "./utils/common.js";
-// import { storage } from "./multer/uploadimage.js";
-
-const server = express();
+import { server, nodeServer } from "./utils/socket.js";
 
 dotenv.config();
 
@@ -62,6 +58,6 @@ connectDB();
 
 const PORT = process.env.PORT || 4000;
 
-server.listen(PORT, () => {
+nodeServer.listen(PORT, () => {
   console.log("server started");
 });

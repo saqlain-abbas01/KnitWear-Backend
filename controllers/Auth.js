@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 const createUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Hash password function
     const hashPassword = (password) => {
@@ -18,12 +18,24 @@ const createUser = async (req, res) => {
 
     const { salt, hash } = hashPassword(password);
 
-    const newUser = new User({
-      name,
-      email,
-      password: hash, // Store the hashed password as a Buffer
-      salt: salt, // Store the salt as a Buffer
-    });
+    let newUser = "";
+    if (role) {
+      newUser = new User({
+        name,
+        email,
+        role,
+        password: hash, // Store the hashed password as a Buffer
+        salt: salt, // Store the salt as a Buffer
+      });
+    } else {
+      newUser = new User({
+        name,
+        email,
+        role,
+        password: hash, // Store the hashed password as a Buffer
+        salt: salt, // Store the salt as a Buffer
+      });
+    }
 
     await newUser.save();
     res.status(201).json({
@@ -65,6 +77,35 @@ const logInUser = (req, res, next) => {
   })(req, res, next);
 };
 
+const logInAdmin = (req, res, next) => {
+  passport.authenticate("local", { session: false }, (err, user) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: "Server error" });
+    }
+
+    if (!user || user.role !== "admin") {
+      return res.status(401).json({
+        success: false,
+        message: "Only admin users can log in here.",
+      });
+    }
+
+    // If authentication succeeded and user is admin
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.json({ success: true, user });
+  })(req, res, next);
+};
+
 const googleAuth = (req, res) => {
   // Generate JWT and set cookie
 
@@ -78,8 +119,8 @@ const googleAuth = (req, res) => {
     sameSite: "none",
     maxAge: 2 * 24 * 60 * 60 * 1000,
   });
-  console.log(process.env.NODE_ENV)
-  
+  console.log(process.env.NODE_ENV);
+
   // Redirect to frontend with token in cookie
   res.redirect("https://knit-wear.vercel.app"); // or your app dashboard
 };
@@ -89,4 +130,4 @@ const isAuthUser = (req, res) => {
   return res.json({ user: req.body });
 };
 
-export { createUser, logInUser, isAuthUser, googleAuth };
+export { createUser, logInUser, isAuthUser, googleAuth, logInAdmin };
