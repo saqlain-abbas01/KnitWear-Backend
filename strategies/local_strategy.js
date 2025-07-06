@@ -9,7 +9,6 @@ import crypto from "crypto";
 
 passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
-
     try {
       const findUser = await User.findOne({ email: email });
 
@@ -28,7 +27,7 @@ passport.use(
         64,
         "sha256"
       );
-  
+
       // Compare the hashed password (Buffer) with the stored password (Buffer)
       if (!crypto.timingSafeEqual(storedPassword, hashedPassword)) {
         return done(null, false, {
@@ -45,9 +44,10 @@ passport.use(
 
 const cookieExtractor = function (req) {
   let token = null;
+
   if (req && req.headers && req.headers.cookie) {
     const cookies = cookie.parse(req.headers.cookie);
-    token = cookies.auth_token;
+    token = cookies.auth_token || cookies.admin_token;
   }
 
   return token;

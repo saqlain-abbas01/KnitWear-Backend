@@ -95,7 +95,7 @@ const logInAdmin = (req, res, next) => {
       expiresIn: "1d",
     });
 
-    res.cookie("auth_token", token, {
+    res.cookie("admin_token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "none",

@@ -31,7 +31,6 @@ const fecthUserById = async (req, res) => {
 };
 
 const updateUserById = async (req, res) => {
-
   try {
     const id = req.user.id;
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
@@ -60,7 +59,6 @@ const deleteUser = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-
   const { email } = req.body;
 
   if (!email) {
@@ -145,7 +143,6 @@ const resetPassword = async (req, res) => {
 };
 
 const userLogout = async (req, res) => {
-
   res.clearCookie("auth_token", {
     httpOnly: true,
     secure: true,
